@@ -46,6 +46,12 @@ jobs:
             - name: Publicar Relatório HTML
               uses: actions/upload-artifact@v5
 
+            - name: Verificar relatório gerado
+              if: always()
+              run: |
+              echo "Conteúdo do projeto:"
+              ls -R
+
               # Garante o upload mesmo se os testes quebrarem  
               if: always() 
               with:
