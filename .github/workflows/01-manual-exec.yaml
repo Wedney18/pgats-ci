@@ -1,65 +1,51 @@
 # CI de Nível 01 - Disparo Manual através de clique
 
-# nome da pipeline
 name: 'Execução Manual'
 
-# gatilhos / triggers - regras de disparo
-# gatilho manual = workflow_dispatch
+on:
+  workflow_dispatch:
 
-on: 
-    workflow_dispatch:
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
 
-#tarefas dentro da pipeline = jobs
+    steps:
+      # clone do projeto
+      - uses: actions/checkout@v5
 
-jobs: 
+      # instalação do node
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
 
-    e2e-tests:
-        #máquina onde o job vai rodar
-        runs-on: ubuntu-latest
+      # instalação do Yarn
+      - name: Instalando Yarn
+        run: npm install -g yarn
 
-        # passos do job
-        steps:
-            # clone do projeto
-            - uses: actions/checkout@v5
+      # instalação das dependências
+      - name: Instalando dependências
+        run: yarn
 
-            # instalação do node
-            - uses: actions/setup-node@v5
-              with:
-                node-version: 24.x
+      # instalação dos Browsers do Playwright
+      - name: Instalando Browsers do Playwright
+        run: yarn playwright install
 
-            # instalação do Yarn
-            - name: Instalando Yarn
-              run: npm install -g yarn
+      # executar os testes e2e
+      - name: Executando os testes e2e
+        run: yarn run e2e
 
-            # instalação das dependências
-            - name: Instalando dependências
-              run: yarn
+      # diagnóstico
+      - name: Verificar relatório gerado
+        if: always()
+        run: |
+          echo "Conteúdo da pasta playwright-report"
+          ls -la playwright-report || echo "Pasta não encontrada"
 
-            # instalação dos Browsers do Playwright
-            - name: Instalando Browsers do Playwright
-              run: yarn playwright install
-
-            # executar os testes e2e
-            - name: Executando os testes e2e
-              run: yarn run e2e
-              
-            - name: Publicar Relatório HTML
-              uses: actions/upload-artifact@v5
-
-            - name: Verificar relatório gerado
-              if: always()
-              run: |
-              echo "Conteúdo do projeto:"
-              ls -R
-
-              # Garante o upload mesmo se os testes quebrarem  
-              if: always() 
-              with:
-              # Nome do arquivo zip que será gerado
-                name: relatorio-html-testes 
-
-              # Pasta onde o relatório HTML foi gerado 
-                path: playwright-report/
-
-              # Tempo que o arquivo ficará guardado no GitHub
-                retention-days: 90                        
+      # upload do relatório
+      - name: Publicar Relatório HTML
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-html-testes
+          path: playwright-report/
+          retention-days: 90
