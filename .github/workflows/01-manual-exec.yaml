@@ -5,6 +5,11 @@ name: 'Execução Manual'
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
@@ -49,3 +54,39 @@ jobs:
           name: relatorio-html-testes
           path: playwright-report/
           retention-days: 90
+
+      # publicar outros artefatos de relatório
+      - name: Publicar relatório de cobertura (HTML)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cobertura-html
+          path: reports/coverage/lcov-report/
+          retention-days: 90
+
+      - name: Publicar lcov (coverage)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cobertura-lcov
+          path: reports/coverage/lcov.info
+          retention-days: 90
+
+      - name: Publicar resultados JUnit (XML)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultados-xml
+          path: results.xml
+          retention-days: 90
+
+      # Preparar e publicar relatório HTML como GitHub Pages
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v1
+        if: always()
+        with:
+          path: reports/coverage/lcov-report
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
+        if: always()
