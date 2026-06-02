@@ -45,8 +45,15 @@ jobs:
               
             - name: Publicar Relatório HTML
               uses: actions/upload-artifact@v4
-              if: always() # Garante o upload mesmo se os testes quebrarem
+
+              # Garante o upload mesmo se os testes quebrarem  
+              if: always() 
               with:
-                name: relatorio-html-testes                    # Nome do arquivo zip que será gerado
-                path: playwright-report/                        # Pasta onde o relatório HTML foi gerado
-                retention-days: 90                             # Tempo que o arquivo ficará guardado no GitHub
+              # Nome do arquivo zip que será gerado
+                name: relatorio-html-testes 
+
+              # Pasta onde o relatório HTML foi gerado 
+                path: playwright-report/
+
+              # Tempo que o arquivo ficará guardado no GitHub
+                retention-days: 90                        
