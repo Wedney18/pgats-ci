@@ -42,3 +42,11 @@ jobs:
             # executar os testes e2e
             - name: Executando os testes e2e
               run: yarn run e2e
+              
+            - name: Publicar Relatório HTML
+              uses: actions/upload-artifact@v4
+              if: always() # Garante o upload mesmo se os testes quebrarem
+              with:
+                name: relatorio-html-testes                    # Nome do arquivo zip que será gerado
+                path: playwright-report/                        # Pasta onde o relatório HTML foi gerado
+                retention-days: 90                             # Tempo que o arquivo ficará guardado no GitHub
