@@ -25,18 +25,18 @@ lint:
     - npm run lint:ts
 
 # Job: Testes Unitários
-test:e2e:
+test:unit:
   stage: quality
   image: node:${NODE_VERSION}
 
-  timeout: 60m
-  needs:
-    - lint
-    - test:unit
+  timeout: 15m
+  parallel: 3
 
   script:
-    - export PLAYWRIGHT_BROWSERS_PATH="$CI_PROJECT_DIR/.playwright-browsers" && npm exec playwright install --with-deps
-    - npm run e2e
+    - npm test -- --coverage
+
+  artifacts:
+    when: always
     paths:
       - reports/coverage/
     expire_in: 30 days
@@ -48,13 +48,13 @@ test:e2e:
   stage: quality
   image: node:${NODE_VERSION}
 
-  timeout: 40m
+  timeout: 60m
   needs:
     - lint
     - test:unit
 
   script:
-    - npm exec playwright install --with-deps
+    - export PLAYWRIGHT_BROWSERS_PATH="$CI_PROJECT_DIR/.playwright-browsers" && npm exec playwright install --with-deps
     - npm run e2e
 
   artifacts:
