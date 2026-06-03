@@ -50,9 +50,12 @@ test:unit:
 test:e2e:
   stage: quality
   image: node:${NODE_VERSION}
+  tags:
+    - windows-shell
+    - e2e
 
   when: manual
-  timeout: 60m
+  timeout: 2h
   needs:
     - lint
     - test:unit
@@ -61,7 +64,7 @@ test:e2e:
     - npm ci --legacy-peer-deps
 
   script:
-    - export PLAYWRIGHT_BROWSERS_PATH="$CI_PROJECT_DIR/.playwright-browsers"
+    - set PLAYWRIGHT_BROWSERS_PATH=%CI_PROJECT_DIR%\.playwright-browsers
     - npm exec playwright install --with-deps
     - npm run e2e
 
