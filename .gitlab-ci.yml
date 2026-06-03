@@ -11,15 +11,15 @@ cache:
     - node_modules/
     - .playwright-browsers/
 
-before_script:
-  - npm install --legacy-peer-deps
-
 # Job: Linting e Type Checking
 lint:
   stage: quality
   image: node:${NODE_VERSION}
 
   timeout: 10m
+
+  before_script:
+    - npm ci --legacy-peer-deps
 
   script:
     - npm run lint:ts
@@ -31,6 +31,9 @@ test:unit:
 
   timeout: 15m
   parallel: 3
+
+  before_script:
+    - npm ci --legacy-peer-deps
 
   script:
     - npm test -- --coverage
@@ -53,8 +56,12 @@ test:e2e:
     - lint
     - test:unit
 
+  before_script:
+    - npm ci --legacy-peer-deps
+
   script:
-    - export PLAYWRIGHT_BROWSERS_PATH="$CI_PROJECT_DIR/.playwright-browsers" && npm exec playwright install --with-deps
+    - export PLAYWRIGHT_BROWSERS_PATH="$CI_PROJECT_DIR/.playwright-browsers"
+    - npm exec playwright install --with-deps
     - npm run e2e
 
   artifacts:
