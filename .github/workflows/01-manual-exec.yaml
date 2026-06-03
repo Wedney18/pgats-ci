@@ -1,41 +1,48 @@
-# CI de Nível 01 - Disparo Manual através de clique
-
-name: 'Execução Manual'
+name: Execução Manual
 
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
-  e2e-tests:
+  quality:
     runs-on: ubuntu-latest
 
     steps:
-      # clone do projeto
-      - uses: actions/checkout@v5
+      - name: Checkout do projeto
+        uses: actions/checkout@v5
 
-      # instalação do node
-      - uses: actions/setup-node@v5
+      - name: Configurar Node.js
+        uses: actions/setup-node@v5
         with:
-          node-version: 24.x
+          node-version: 24
+          cache: 'yarn'
 
-      # instalação do Yarn
-      - name: Instalando Yarn
+      - name: Instalar Yarn
         run: npm install -g yarn
 
-      # instalação das dependências
-      - name: Instalando dependências
-        run: yarn
+      - name: Instalar dependências
+        run: yarn install --frozen-lockfile
 
-      # instalação dos Browsers do Playwright
-      - name: Instalando Browsers do Playwright
-        run: yarn playwright install
+      - name: Executar Lint
+        run: yarn lint
 
-      # executar os testes e2e
-      - name: Executando os testes e2e
-        run: yarn run e2e
-        
+      - name: Executar Testes Unitários (Jest)
+        run: yarn test
+
+      - name: Instalar Browsers Playwright
+        run: npx playwright install --with-deps
+
+      - name: Executar Testes E2E
+        run: yarn e2e
+
+      - name: Publicar Artefatos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-testes
+          if-no-files-found: warn
+          path: |
+            playwright-report/
+            results.xml
+            reports/
+            test-results/
