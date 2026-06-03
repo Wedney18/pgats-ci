@@ -24,8 +24,6 @@ lint:
     - npm run lint:ts
     - npm run lint:format
 
-  expire_in: 7 days
-
 # Job: Testes Unitários
 test:unit:
   stage: quality
