@@ -9,6 +9,7 @@ variables:
 cache:
   paths:
     - node_modules/
+    - .playwright-browsers/
 
 before_script:
   - npm install --legacy-peer-deps
@@ -24,18 +25,18 @@ lint:
     - npm run lint:ts
 
 # Job: Testes Unitários
-test:unit:
+test:e2e:
   stage: quality
   image: node:${NODE_VERSION}
 
-  timeout: 15m
-  parallel: 3
+  timeout: 60m
+  needs:
+    - lint
+    - test:unit
 
   script:
-    - npm test -- --coverage
-
-  artifacts:
-    when: always
+    - export PLAYWRIGHT_BROWSERS_PATH="$CI_PROJECT_DIR/.playwright-browsers" && npm exec playwright install --with-deps
+    - npm run e2e
     paths:
       - reports/coverage/
     expire_in: 30 days
