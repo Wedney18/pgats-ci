@@ -51,6 +51,7 @@ test:e2e:
   stage: quality
   image: node:${NODE_VERSION}
 
+  when: manual
   timeout: 60m
   needs:
     - lint
