@@ -4,17 +4,14 @@ stages:
 variables:
   NODE_VERSION: '24'
   CI_TIMEOUT: '1800'
-  YARN_CACHE_FOLDER: '.yarn-cache'
   NODE_ENV: 'test'
 
 cache:
   paths:
     - node_modules/
-    - .yarn-cache/
 
 before_script:
-  - command -v yarn >/dev/null 2>&1 || npm install -g yarn
-  - yarn install --frozen-lockfile
+  - npm ci
 
 # Job: Linting e Type Checking
 lint:
@@ -24,8 +21,8 @@ lint:
   timeout: 10m
 
   script:
-    - yarn lint:ts
-    - yarn lint:format
+    - npm run lint:ts
+    - npm run lint:format
 
   expire_in: 7 days
 
@@ -38,7 +35,7 @@ test:unit:
   parallel: 3
 
   script:
-    - yarn test -- --coverage
+    - npm test -- --coverage
 
   artifacts:
     when: always
@@ -59,8 +56,8 @@ test:e2e:
     - test:unit
 
   script:
-    - npx playwright install --with-deps
-    - yarn e2e
+    - npm exec playwright install --with-deps
+    - npm run e2e
 
   artifacts:
     when: always
