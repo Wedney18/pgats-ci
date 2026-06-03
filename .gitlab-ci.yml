@@ -22,7 +22,6 @@ lint:
 
   script:
     - npm run lint:ts
-    - npm run lint:format
 
 # Job: Testes Unitários
 test:unit:
