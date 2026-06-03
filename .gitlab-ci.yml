@@ -1,102 +1,101 @@
-stages:
-  - quality
+  stages:
+    - quality
 
-variables:
-  NODE_VERSION: '24'
-  CI_TIMEOUT: '1800'
-  NODE_ENV: 'test'
+  variables:
+    NODE_VERSION: '24'
+    CI_TIMEOUT: '1800'
+    NODE_ENV: 'test'
 
-cache:
-  paths:
-    - node_modules/
-    - .playwright-browsers/
-
-# Job: Linting e Type Checking
-lint:
-  stage: quality
-  image: node:${NODE_VERSION}
-
-  timeout: 10m
-
-  before_script:
-    - npm ci --legacy-peer-deps
-
-  script:
-    - npm run lint:ts
-
-# Job: Testes Unitários
-test:unit:
-  stage: quality
-  image: node:${NODE_VERSION}
-
-  timeout: 15m
-  parallel: 3
-
-  before_script:
-    - npm ci --legacy-peer-deps
-
-  script:
-    - npm test -- --coverage
-
-  artifacts:
-    when: always
+  cache:
     paths:
-      - reports/coverage/
-    expire_in: 30 days
+      - node_modules/
+      - .playwright-browsers/
 
-  coverage: '/Lines\s*:\s*(\d+\.\d+)%/'
+  # Job: Linting e Type Checking
+  lint:
+    stage: quality
+    image: node:${NODE_VERSION}
 
-# Job: Testes E2E
-test:e2e:
-  stage: quality
-  image: node:${NODE_VERSION}
-  tags:
-    - windows-shell
-    - e2e
+    timeout: 10m
 
-  when: manual
-  timeout: 2h
-  needs:
-    - lint
-    - test:unit
+    before_script:
+      - npm ci --legacy-peer-deps
 
-  before_script:
-    - npm ci --legacy-peer-deps
+    script:
+      - npm run lint:ts
 
-  script:
-    - set PLAYWRIGHT_BROWSERS_PATH=%CI_PROJECT_DIR%\.playwright-browsers
-    - npm exec playwright install --with-deps
-    - npm run e2e
+  # Job: Testes Unitários
+  test:unit:
+    stage: quality
+    image: node:${NODE_VERSION}
 
-  artifacts:
-    when: always
-    paths:
-      - playwright-report/
-      - test-results/
-    expire_in: 30 days
+    timeout: 15m
+    parallel: 3
 
-  retry:
-    max: 1
-    when:
-      - runner_system_failure
+    before_script:
+      - npm ci --legacy-peer-deps
 
-# Job: Teste de Mutação (Opcional - comentado por padrão)
-# test:mutation:
-#   stage: quality
-#   image: node:${NODE_VERSION}
-#
-#   timeout: 30m
-#   needs:
-#     - test:unit
-#
-#   only:
-#     - merge_requests
-#
-#   script:
-#     - yarn test:mutation
-#
-#   artifacts:
-#     when: always
-#     paths:
-#       - reports/mutation/
-#     expire_in: 7 days
+    script:
+      - npm test -- --coverage
+
+    artifacts:
+      when: always
+      paths:
+        - reports/coverage/
+      expire_in: 30 days
+
+    coverage: '/Lines\s*:\s*(\d+\.\d+)%/'
+
+  # Job: Testes E2E
+  test:e2e:
+    stage: quality
+    image: node:${NODE_VERSION}
+    tags:
+      - windows-runner
+
+    when: manual
+    timeout: 2h
+    needs:
+      - lint
+      - test:unit
+
+    before_script:
+      - npm ci --legacy-peer-deps
+
+    script:
+      - set PLAYWRIGHT_BROWSERS_PATH=%CI_PROJECT_DIR%\.playwright-browsers
+      - npm exec playwright install --with-deps
+      - npm run e2e
+
+    artifacts:
+      when: always
+      paths:
+        - playwright-report/
+        - test-results/
+      expire_in: 30 days
+
+    retry:
+      max: 1
+      when:
+        - runner_system_failure
+
+  # Job: Teste de Mutação (Opcional - comentado por padrão)
+  # test:mutation:
+  #   stage: quality
+  #   image: node:${NODE_VERSION}
+  #
+  #   timeout: 30m
+  #   needs:
+  #     - test:unit
+  #
+  #   only:
+  #     - merge_requests
+  #
+  #   script:
+  #     - yarn test:mutation
+  #
+  #   artifacts:
+  #     when: always
+  #     paths:
+  #       - reports/mutation/
+  #     expire_in: 7 days
