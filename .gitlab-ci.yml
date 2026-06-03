@@ -51,9 +51,6 @@ test:unit:
       - results.xml
     reports:
       junit: results.xml
-      coverage_report:
-        coverage_format: cobertura
-        path: reports/coverage/cobertura-coverage.xml
     expire_in: 30 days
   
   coverage: '/Lines\s*:\s*(\d+\.\d+)%/'
