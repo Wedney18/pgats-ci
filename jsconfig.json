@@ -13,5 +13,5 @@
     "checkJs": true,
     "maxNodeModuleJsDepth": 0,
   },
-  "include": ["src", "test"],
+  "include": ["src", "test"]
 }
