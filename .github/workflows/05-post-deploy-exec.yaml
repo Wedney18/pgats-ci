@@ -13,6 +13,9 @@ on:
     workflows: ['N1 - Execução Manual', 'N2 - Execução Agendada']
     types:
       - completed
+  push:
+    branches:
+      - master
 
 #tarefas dentro da pipeline = jobs
 
@@ -49,3 +52,10 @@ jobs:
       # executar os testes e2e
       - name: Executando testes e2e
         run: yarn run e2e
+
+      - name: Salvando relatórios de testes
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          path: ./playwright-report
+          name: Relatório de Testes E2E
