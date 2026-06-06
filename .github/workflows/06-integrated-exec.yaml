@@ -1,7 +1,7 @@
 # CI de Nível 04 - Pipeline Integrada ao Build do Código
 
 # nome da pipeline
-name: "Execução Integrada"
+name: 'Execução Integrada'
 
 # gatilhos / triggers - regras de disparo
 # gatilho manual = workflow_dispatch
@@ -10,9 +10,9 @@ name: "Execução Integrada"
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
 
 # tarefas dentro da pipeline = jobs
