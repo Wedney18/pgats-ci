@@ -2,8 +2,6 @@
 
 # nome da pipeline
 name: 'N4 -Execução Integrada'
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 # gatilhos / triggers - regras de disparo
 # gatilho manual = workflow_dispatch
