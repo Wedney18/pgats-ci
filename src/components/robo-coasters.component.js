@@ -42,6 +42,7 @@ export class RoboCoastersComponent extends RoboComponent {
         break;
       case '':
         this.view.innerHTML = `<robo-choose-ride></robo-choose-ride>`;
+        break;
       default:
         router.navigate([]);
         break;

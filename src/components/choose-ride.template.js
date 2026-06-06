@@ -18,7 +18,7 @@ templateRide.innerHTML = `
       <div class="card-body">
         <h5 class="card-title">Ride name</h5>
         <p class="card-text">Ride description</p>
-        <a href="#" class="card-link btn btn-primary">Choose</a>
+        <button type="button" class="card-link btn btn-primary">Choose</button>
       </div>
     </div>
   </div>
