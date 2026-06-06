@@ -9,7 +9,12 @@ name: 'N4 -Execução Integrada'
 # gatilho por conclusão de outra pipeline = workflow_run
 
 on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
   workflow_dispatch:
+
 #tarefas dentro da pipeline = jobs
 
 jobs:
