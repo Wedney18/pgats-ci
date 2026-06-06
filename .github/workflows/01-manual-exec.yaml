@@ -1,48 +1,44 @@
-name: Execução Manual
+# CI de Nível 01 - Disparo Manual através de clique
+
+# nome da pipeline
+name: "Execução Manual"
+
+# gatilhos / triggers - regras de disparo
+# gatilho manual = workflow_dispatch
 
 on:
-  workflow_dispatch:
+    workflow_dispatch:
+
+#tarefas dentro da pipeline = jobs
 
 jobs:
-  quality:
-    runs-on: ubuntu-latest
+    #nome do job
+    e2e-tests:
+        # maquina onde o job vai rodar
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout do projeto
-        uses: actions/checkout@v5
+        # passos do job
+        steps:
+            # clone do projeto
+            - uses: actions/checkout@v4
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: 'yarn'
+            # instalção do node
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24.x
 
-      - name: Instalar Yarn
-        run: npm install -g yarn
-
-      - name: Instalar dependências
-        run: yarn install --frozen-lockfile
-
-      - name: Executar Lint
-        run: yarn lint
-
-      - name: Executar Testes Unitários (Jest)
-        run: yarn test
-
-      - name: Instalar Browsers Playwright
-        run: npx playwright install --with-deps
-
-      - name: Executar Testes E2E
-        run: yarn e2e
-
-      - name: Publicar Artefatos
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: relatorios-testes
-          if-no-files-found: warn
-          path: |
-            playwright-report/
-            results.xml
-            reports/
-            test-results/
+            # instalação do Yarn
+            - name: Instalando Yarn
+              run: npm install -g yarn
+            
+            #   instalação das dependências
+            - name: Instalando dependências
+              run: yarn
+            
+            # instalação dos Browsers do Playwright
+            - name: Instalando Browsers do Playwright
+              run: yarn playwright install
+            
+            # executar os testes e2e
+            - name: Executando testes e2e
+              run: yarn run e2e
