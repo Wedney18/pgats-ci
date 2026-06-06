@@ -29,9 +29,7 @@ export class ChooseRideComponent extends RoboComponent {
     row.class.cardText.innerText = ride.description;
     const img = /** @type {HTMLImageElement} */ (row.class.cardImgTop);
     img.src = ride.image;
-    const button = /** @type {HTMLButtonElement} */ (
-      row.class.cardLink
-    );
+    const button = /** @type {HTMLButtonElement} */ (row.class.cardLink);
     button.innerText = `Choose ${ride.name}`;
     button.addEventListener('click', () => {
       router.navigate(['ride', ride.id]);
