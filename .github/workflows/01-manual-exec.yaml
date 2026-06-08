@@ -25,7 +25,7 @@ jobs:
       # clone do projeto
       - uses: actions/checkout@v4
 
-      # instalção do node
+      # instalação do node
       - uses: actions/setup-node@v4
         with:
           node-version: 24.x
